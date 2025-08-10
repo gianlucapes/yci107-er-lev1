@@ -1,5 +1,6 @@
 from config import settings
 import requests
+from models.training.output.comment import ChannelOutput
 import json
 
 class Retriever:
@@ -8,13 +9,16 @@ class Retriever:
         self.url_retrieve_video=url_retrieve_video
 
     def get_id_channel(self,name:str):
-        channels=[]
-        params_channels={"name": name}
-        channels_res=requests.get(self.url_retrieve_youtube_channel,params_channels)
-        json_channel_id=json.loads(channels_res.content)
-        for channel_id in json_channel_id:
-            channels.append({"title":channel_id['title'],"channelId":channel_id['channelId']})
-        return channels
+        try:
+            channels=[]
+            params_channels={"name": name}
+            channels_res=requests.get(self.url_retrieve_youtube_channel,params_channels)
+            json_channel_id=json.loads(channels_res.content)
+            for channel_id in json_channel_id:
+                channels.append(ChannelOutput(title=channel_id['title'],channelId=channel_id['channelId']))
+            return channels
+        except Exception as e:
+            raise e
 
     def get_id_videos(self,channels:list[str]):
         videos=[]
