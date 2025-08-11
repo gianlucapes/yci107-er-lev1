@@ -1,5 +1,12 @@
 from pydantic import BaseModel
+from models.training.nodes.comment import ChannelNode,VideoNode
 
-class TrainingCommentBody(BaseModel):
+class TrainingYCCommentRetrieveBody(BaseModel):
     channelNames: list[str]
+    number_of_videos_per_channel : int
     number_of_comments_per_video : int
+
+class TrainingVideoCommentRetrieveBody(BaseModel):
+    video : VideoNode
+    number_of_comments : int
+

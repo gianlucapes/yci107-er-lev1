@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-class ChannelOutput(BaseModel):
+class ChannelNode(BaseModel):
     """
     Represents a YouTube channel node.
 
@@ -12,7 +12,7 @@ class ChannelOutput(BaseModel):
     channelId : str
 
 
-class VideoOutput(BaseModel):
+class VideoNode(BaseModel):
     """
     Represents a YouTube video node.
 
@@ -23,10 +23,10 @@ class VideoOutput(BaseModel):
     """
     title : str
     videoId : str
-    channel : ChannelOutput
+    channel : ChannelNode
 
 
-class CommentOutput(BaseModel):
+class CommentNode(BaseModel):
     """
     Represents a YouTube comment node.
 
@@ -39,10 +39,10 @@ class CommentOutput(BaseModel):
     id : str
     textDisplay : str
     textOriginal : str
-    video : VideoOutput
+    video : VideoNode
 
 
-class TrainingCommentOutput(BaseModel):
+class TrainingComments(BaseModel):
     """
     Pydantic model representing a graph-like data structure for YouTube comments.
 
@@ -71,5 +71,5 @@ class TrainingCommentOutput(BaseModel):
     This structure allows representing relationships between nodes (comments, videos, channels) in a nested manner,
     ideal for JSON serialization, data validation, and REST APIs returning hierarchical related data.
     """
-    comments : list[CommentOutput]
+    comments : list[CommentNode]
 
