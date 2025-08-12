@@ -6,7 +6,7 @@ from agents.retriever import Retriever
 from models.training.request.comment import TrainingYCCommentRetrieveBody,TrainingVideoCommentRetrieveBody
 
 
-router = APIRouter(prefix="/training_dataset")
+router = APIRouter(prefix="/training_dataset/retrieve_entities")
 
 base_url = settings.BASE_URL_LOCAL if settings.DEV else settings.BASE_URL
 url_retrieve_youtube_channel=urljoin(base_url,settings.URL_RETRIEVE_YOUTUBE_CHANNEL)
@@ -16,10 +16,13 @@ retriever=Retriever(url_retrieve_youtube_channel,
                             url_retrieve_video,
                             url_retrieve_comment)
 
-@router.post("/youtube_channel/retrieve_comments")
-def retrieve_comments_from_youtube_channels(trainingCommentRetrieveBody : TrainingYCCommentRetrieveBody):
+@router.get("/youtube_channel/retrieve_comments",tags=["retrieve comments from youtube channel"])
+def retrieve_comments_from_youtube_channels(channelNames: list[str],number_of_videos_per_channel : int,number_of_comments_per_video : int):
     try:
         res=[]
+        trainingCommentRetrieveBody = TrainingYCCommentRetrieveBody(channelNames=channelNames,
+                                                                    number_of_videos_per_channel=number_of_videos_per_channel,
+                                                                    number_of_comments_per_video=number_of_comments_per_video)
         for item in trainingCommentRetrieveBody.channelNames:
             channels=retriever.get_channel(item)
             for channel in channels:
