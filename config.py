@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     URL_RETRIEVE_VIDEO  : str = os.environ.get("URL_RETRIEVE_VIDEO",default="")
     URL_RETRIEVE_COMMENT : str = os.environ.get("URL_RETRIEVE_COMMENT",default="")
     DEV : int = os.environ.get("DEV",default=0)
+    NEO4J_PASSWORD : str = os.environ.get("NEO4J_PASSWORD",default="")
 
 
 settings=Settings()

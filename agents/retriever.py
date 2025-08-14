@@ -1,6 +1,6 @@
 from config import settings
 import requests
-from models.training.nodes.comment import ChannelNode,VideoNode,CommentNode,TrainingComments
+from models.training.nodes.nodes import ChannelNode,VideoNode,CommentNode,TrainingComments
 import json
 
 class Retriever:

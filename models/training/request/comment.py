@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from models.training.nodes.comment import ChannelNode,VideoNode
+from models.training.nodes.nodes import ChannelNode,VideoNode
 
 class TrainingYCCommentRetrieveBody(BaseModel):
     channelNames: list[str]

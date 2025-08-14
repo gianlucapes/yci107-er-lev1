@@ -1,30 +1,52 @@
+from models.training.nodes.nodes import CommentNode
+
 class Neo4jService:
     def __init__(self,driver):
         self.driver = driver
 
     def close(self):
         self.driver.close()
-    
-    def run_query_for_videos(self,query,list_of_entities:dict,channelId:str):
-        with self.driver.session() as session:
-            result = session.run(query,
-                    {"list_of_entities": list_of_entities,
-                     "channelId": channelId
-                    })
-            for res in result:
-                print(res)
 
-    def run_query(self, query: str, kwargs: dict = None, list_of_entities: list = None):
-        parameters = {}
+    def save_comments(self,comment:CommentNode):
+        try:
+            with self.driver.session() as session:
+                session.run("""
+                    // Channel Node
+                    MERGE (c:Channel {channelId: $channelId})
+                    ON CREATE SET c.title = $channelTitle
+                    ON MATCH SET c.title = $channelTitle
 
-        if kwargs:
-            parameters.update(kwargs)
-        if list_of_entities:
-            parameters["list_of_entities"] = list_of_entities
+                    // Video Node
+                    MERGE (v:Video {videoId: $videoId})
+                    ON CREATE SET v.title = $videoTitle
+                    ON MATCH SET v.title = $videoTitle
 
-        with self.driver.session() as session:
-            if parameters:
-                session.run(query, parameters)
-            else:
-                session.run(query)
-    
+                    // Relationship Channel -> video
+                    MERGE (c)-[:HAS_VIDEO]->(v)
+
+                    // Comment Node
+                    MERGE (cm:Comment {commentId: $commentId})
+                    ON CREATE SET 
+                        cm.textDisplay = $textDisplay,
+                        cm.textOriginal = $textOriginal,
+                        cm.category = $category
+                    ON MATCH SET
+                        cm.textDisplay = $textDisplay,
+                        cm.textOriginal = $textOriginal,
+                        cm.category = $category
+
+                    // Relationship video -> comment
+                    MERGE (v)-[:HAS_COMMENT]->(cm)
+                """, {
+                    "channelId": comment.video.channel.channelId,
+                    "channelTitle": comment.video.channel.title,
+                    "videoId": comment.video.videoId,
+                    "videoTitle": comment.video.title,
+                    "commentId": comment.id,
+                    "textDisplay": comment.textDisplay,
+                    "textOriginal": comment.textOriginal,
+                    "category": comment.category
+                })
+        except Exception as e:
+            raise Exception()
+

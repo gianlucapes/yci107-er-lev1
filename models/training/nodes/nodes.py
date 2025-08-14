@@ -37,8 +37,9 @@ class CommentNode(BaseModel):
     - video: An instance of VideoOutput representing the video associated with the comment.
     """
     id : str
-    textDisplay : str
-    textOriginal : str
+    textDisplay : str | None = None
+    textOriginal : str | None = None
+    category : str | None = None
     video : VideoNode
 
 
